@@ -1,0 +1,108 @@
+{
+  "name": "@spectaclehq/email-to-self",
+  "version": "0.1.0",
+  "description": "An open-source widget that detects in-app browsers (LinkedIn, Instagram, Facebook) and prompts visitors to email the page link to themselves so they can reopen it in a real browser.",
+  "license": "MIT",
+  "author": "Spectacle <dev@spectaclehq.com> (https://spectaclehq.com)",
+  "homepage": "https://github.com/spectacle-hq/email-to-self",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spectacle-hq/email-to-self.git"
+  },
+  "keywords": [
+    "in-app-browser",
+    "linkedin",
+    "instagram",
+    "facebook",
+    "mailto",
+    "email-to-self",
+    "share",
+    "open-in-browser",
+    "shadow-dom",
+    "widget",
+    "spectacle"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/email-to-self.iife.js",
+  "jsdelivr": "./dist/email-to-self.iife.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./iife": "./dist/email-to-self.iife.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "size": "size-limit",
+    "prepublishOnly": "pnpm build"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^11.1.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "happy-dom": "^15.0.0",
+    "prettier": "^3.3.0",
+    "react": "^18.3.0",
+    "size-limit": "^11.1.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "size-limit": [
+    {
+      "name": "vanilla (IIFE, all 3 layouts)",
+      "path": "dist/email-to-self.iife.js",
+      "limit": "9 KB"
+    },
+    {
+      "name": "vanilla (ESM, all 3 layouts)",
+      "path": "dist/chunk-*.js",
+      "limit": "12 KB"
+    },
+    {
+      "name": "react entry (incl. core)",
+      "path": "dist/react.js",
+      "limit": "9 KB",
+      "ignore": [
+        "react"
+      ]
+    }
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

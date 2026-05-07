@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>The slow-roast guide for impatient people</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23000'/%3E%3Ctext x='12' y='17' text-anchor='middle' font-family='Helvetica' font-weight='700' font-size='14' fill='%23fff'%3ER%3C/text%3E%3C/svg%3E"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: ui-serif, Georgia, 'Times New Roman', serif;
+        margin: 0;
+        padding: 32px 20px 200px;
+        max-width: 720px;
+        margin-inline: auto;
+        color: #111;
+        background: #fbfaf7;
+        line-height: 1.6;
+      }
+      .kicker {
+        font-family: ui-sans-serif, system-ui;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        color: #6b6b6b;
+      }
+      h1 {
+        font-size: 38px;
+        line-height: 1.1;
+        margin: 8px 0 12px;
+      }
+      .byline {
+        font-family: ui-sans-serif, system-ui;
+        font-size: 13px;
+        color: #6b6b6b;
+        margin: 0 0 24px;
+      }
+      figure {
+        margin: 16px 0;
+        aspect-ratio: 16/9;
+        background: linear-gradient(135deg, #3b2417, #1c1009);
+        border-radius: 12px;
+      }
+      figcaption {
+        font-family: ui-sans-serif, system-ui;
+        font-size: 11px;
+        color: #9a9a9a;
+        padding: 6px 4px 0;
+      }
+      p {
+        margin: 14px 0;
+      }
+
+      .panel {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        background: #fff;
+        border: 1px solid #e7e5df;
+        border-radius: 12px;
+        padding: 12px;
+        font-family: ui-sans-serif, system-ui;
+        font-size: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        z-index: 10;
+        display: grid;
+        gap: 6px;
+      }
+      .panel button {
+        appearance: none;
+        font: inherit;
+        padding: 6px 10px;
+        background: #111;
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .panel select {
+        font: inherit;
+        padding: 4px 6px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <strong>Email-to-Self demo</strong>
+      <label>
+        Layout:
+        <select id="layout">
+          <option value="drawer">Drawer</option>
+          <option value="fullscreen">Full-screen</option>
+          <option value="banner">Banner</option>
+        </select>
+      </label>
+      <button id="show">Show widget</button>
+      <button id="reset">Reset dismiss</button>
+    </div>
+
+    <p class="kicker">Coffee Journal</p>
+    <h1>The slow-roast guide for impatient people</h1>
+    <p class="byline">By Aki Mori · 9 min read</p>
+    <figure></figure>
+    <figcaption>Photo: J. Calder</figcaption>
+    <p>
+      A perfect pour-over isn't about gear. It's about geometry — the cone, the bloom, the patience
+      to let water do what water does.
+    </p>
+    <p>
+      We started this guide for the friend who keeps texting at 7am: why does mine taste burnt? The
+      honest answer is grind size, but the real answer takes a little longer.
+    </p>
+    <p>
+      You'll learn three things: how to bloom without channeling, why your kettle probably matters
+      less than you think, and the only timer ratio that actually survives contact with a real
+      morning.
+    </p>
+
+    <script type="module">
+      import { EmailToSelf, clearDismiss } from '../dist/index.js';
+
+      let widget;
+      function mount(layout) {
+        widget?.destroy();
+        widget = new EmailToSelf({
+          layout,
+          forceShow: true,
+          trackInSpectacle: true,
+          prefillEmail: 'aki.mori@gmail.com',
+          trigger: 'manual',
+          onSubmit: (email) => console.log('[demo] onSubmit', email),
+          onDismiss: () => console.log('[demo] onDismiss'),
+        });
+        widget.show();
+      }
+
+      const layoutSel = document.getElementById('layout');
+      document.getElementById('show').addEventListener('click', () => mount(layoutSel.value));
+      document.getElementById('reset').addEventListener('click', () => {
+        clearDismiss();
+        location.reload();
+      });
+
+      // Auto-show on load with the default layout.
+      mount(layoutSel.value);
+    </script>
+  </body>
+</html>
