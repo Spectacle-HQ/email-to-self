@@ -1,7 +1,5 @@
-<p align="right">
-  <a href="https://www.spectaclehq.com">
-    <img src="https://www.spectaclehq.com/logo.svg" alt="Spectacle" height="28" />
-  </a>
+<p align="center">
+  <img src="./assets/logo-lockup.svg" alt="@spectacle/email-to-self" width="600" />
 </p>
 
 # @spectaclehq/email-to-self
@@ -58,6 +56,8 @@ That's it. The widget will:
 3. On submit, open the device's `mailto:` handler with the page title as subject and URL as body.
 
 ### React
+
+The React entry is marked `'use client'`, so it's safe to import directly from a Next.js Server Component (App Router) or any other React Server Components environment.
 
 ```tsx
 import { EmailToSelfWidget } from '@spectaclehq/email-to-self/react';
@@ -225,3 +225,9 @@ Open `examples/demo.html` after a build to play with all three layouts.
 ## License
 
 MIT © Spectacle
+
+<p align="center">
+  <a href="https://www.spectaclehq.com">
+    <img src="https://www.spectaclehq.com/logo.svg" alt="Spectacle" height="28" />
+  </a>
+</p>

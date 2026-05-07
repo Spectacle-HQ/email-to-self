@@ -32,19 +32,39 @@ const cssMinifyPlugin = {
 
 export default defineConfig([
   {
-    entry: {
-      index: 'src/index.ts',
-      react: 'src/react/index.tsx',
-    },
+    entry: { index: 'src/index.ts' },
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,
     clean: true,
     treeshake: true,
     target: 'es2020',
+    minify: false,
+    esbuildPlugins: [cssMinifyPlugin],
+  },
+  {
+    // Prepends `"use client";` to the React entry so it can be imported
+    // directly from a Next.js Server Component. esbuild strips a normal
+    // `banner` directive, so we post-process the output instead.
+    entry: { react: 'src/react/index.tsx' },
+    format: ['esm', 'cjs'],
+    dts: true,
+    sourcemap: true,
+    clean: false,
+    treeshake: true,
+    target: 'es2020',
     external: ['react'],
     minify: false,
     esbuildPlugins: [cssMinifyPlugin],
+    async onSuccess() {
+      const { readFile, writeFile } = await import('node:fs/promises');
+      for (const file of ['dist/react.js', 'dist/react.cjs']) {
+        const content = await readFile(file, 'utf8');
+        if (!content.startsWith('"use client"')) {
+          await writeFile(file, `"use client";\n${content}`);
+        }
+      }
+    },
   },
   {
     entry: { 'email-to-self.iife': 'src/iife.ts' },
