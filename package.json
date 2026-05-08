@@ -1,6 +1,6 @@
 {
   "name": "@spectaclehq/email-to-self",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "An open-source widget that detects in-app browsers (LinkedIn, Instagram, Facebook) and prompts visitors to email the page link to themselves so they can reopen it in a real browser.",
   "license": "MIT",
   "author": "Spectacle <dev@spectaclehq.com> (https://spectaclehq.com)",

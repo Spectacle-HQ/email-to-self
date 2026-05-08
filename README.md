@@ -17,7 +17,7 @@ In-app browsers trap users in a degraded experience — bookmarks, password mana
 - **Three layouts** — drawer, full-screen, banner
 - **Accessible** — focus trap, screen-reader labels, keyboard nav, `prefers-reduced-motion`
 - **i18n-ready** — every string is overridable
-- **Pluggable actions** — defaults to `mailto:`, swap in your own async sender
+- **Pluggable actions** — defaults to `mailto:`, swap in your own async sender. [Spectacle](https://www.spectaclehq.com) customers get free access to the hosted send endpoint.
 
 ## Install
 
@@ -141,8 +141,6 @@ The endpoint **only accepts requests accompanied by an HMAC-signed envelope mint
 #### 1. Get your `keyId` and `secret`
 
 Sign in to your Spectacle workspace (`https://app.spectaclehq.com`) and open **Settings → Email-to-self** to find your `keyId` (public, may live in client code) and `secret` (treat as a server-side credential — never ship to the browser). Each key is bound to an allow-list of origins and hostnames you control.
-
-> v1 is invitation-only — drop us a line at [dev@spectaclehq.com](mailto:dev@spectaclehq.com) if you'd like access.
 
 #### 2. Sign the envelope server-side
 

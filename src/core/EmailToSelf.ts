@@ -492,18 +492,14 @@ export class EmailToSelf implements EmailToSelfInstance {
   }
 
   #renderLoading(): void {
-    if (!this.#refs?.submit || !this.#refs.submitLabel) return;
+    if (!this.#refs?.submit) return;
     this.#state = 'loading';
     this.#refs.submit.disabled = true;
     const label =
       this.#mode === 'mailto'
         ? this.#copy.submitButtonLoadingMailto
         : this.#copy.submitButtonLoadingCustom;
-    replaceChildren(
-      this.#refs.submitLabel.parentElement!,
-      this.#spinner(),
-      document.createTextNode(label),
-    );
+    replaceChildren(this.#refs.submit, this.#spinner(), document.createTextNode(label));
   }
 
   #renderSuccess(email: string): void {
@@ -557,15 +553,12 @@ export class EmailToSelf implements EmailToSelfInstance {
   }
 
   #renderActionError(message: string): void {
-    if (!this.#refs?.actionError || !this.#refs.submit || !this.#refs.submitLabel) return;
+    if (!this.#refs?.actionError || !this.#refs.submit) return;
     this.#state = 'error';
     this.#refs.actionError.textContent = message;
     this.#refs.actionError.style.display = '';
     this.#refs.submit.disabled = false;
-    replaceChildren(
-      this.#refs.submitLabel.parentElement!,
-      document.createTextNode(this.#copy.submitButton),
-    );
+    replaceChildren(this.#refs.submit, document.createTextNode(this.#copy.submitButton));
   }
 
   // === Banner rendering ======================================================
