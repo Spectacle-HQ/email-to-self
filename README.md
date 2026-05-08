@@ -10,6 +10,10 @@
 [![bundle size](https://img.shields.io/bundlephobia/minzip/@spectaclehq/email-to-self)](https://bundlephobia.com/package/@spectaclehq/email-to-self)
 [![license](https://img.shields.io/npm/l/@spectaclehq/email-to-self.svg)](./LICENSE)
 
+<p align="center">
+  <video src="https://assets.spectaclehq.com/assets/email-to-self/email-to-self-demo.mp4" autoplay loop muted playsinline width="640"></video>
+</p>
+
 In-app browsers trap users in a degraded experience — bookmarks, password managers, and tabs don't work properly. This drop-in widget detects that situation and offers a single tap to email the link to themselves.
 
 - **Zero runtime dependencies** — vanilla TypeScript, ~8.5 KB gzipped (IIFE, all three layouts)
