@@ -30,6 +30,8 @@ export { isValidEmail } from './core/validate';
 export { isDismissed, recordDismiss, clearDismiss } from './core/persistence';
 export { resolveLogoUrl } from './core/favicon';
 export { defaultCopy } from './core/i18n';
+export { apiAction } from './core/actions/api';
+export type { ApiActionOptions } from './core/actions/api';
 export { mailtoAction } from './core/actions/mailto';
 
 export type {

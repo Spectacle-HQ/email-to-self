@@ -67,6 +67,17 @@ export default defineConfig([
     },
   },
   {
+    entry: { server: 'src/server/index.ts' },
+    format: ['esm', 'cjs'],
+    dts: true,
+    sourcemap: true,
+    clean: false,
+    treeshake: true,
+    target: 'node18',
+    platform: 'node',
+    minify: false,
+  },
+  {
     entry: { 'email-to-self.iife': 'src/iife.ts' },
     format: ['iife'],
     globalName: 'EmailToSelf',

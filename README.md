@@ -102,23 +102,24 @@ Or initialize manually:
 
 ### `new EmailToSelf(options?)`
 
-| Option             | Type                                                              | Default                                    | Description                                                                                                         |
-|--------------------|-------------------------------------------------------------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-| `layout`           | `'drawer' \| 'fullscreen' \| 'banner'`                            | `'drawer'`                                 | Visual variant.                                                                                                     |
-| `url`              | `string`                                                          | `window.location.href`                     | URL emailed to the user.                                                                                            |
-| `title`            | `string`                                                          | `document.title`                           | Page title shown in preview + used as `mailto:` subject.                                                            |
-| `logoUrl`          | `string \| null`                                                  | auto-detected favicon                      | Override the auto-detected logo. `null` hides it.                                                                   |
-| `persistence`      | `{ strategy: 'localStorage' \| 'session' \| 'always', ttlDays? }` | `{ strategy: 'localStorage', ttlDays: 7 }` | How long to remember dismissals.                                                                                    |
-| `trigger`          | `'load' \| 'manual' \| { delay: ms } \| { scrollDepth: 0..100 }`  | `'load'`                                   | When the widget should appear.                                                                                      |
-| `forceShow`        | `boolean`                                                         | `false`                                    | Bypass UA detection + dismiss record. Useful in development.                                                        |
-| `debug`            | `boolean`                                                         | `false`                                    | Alias for `forceShow`.                                                                                              |
-| `copy`             | `Partial<Copy>`                                                   | English defaults                           | Override any user-facing string. See the [Copy keys](#copy-keys) table.                                             |
-| `action`           | `(email, meta) => Promise<ActionResult>`                          | `mailtoAction`                             | Replace the default `mailto:` flow with a custom send.                                                              |
-| `onSubmit`         | `(email) => void`                                                 | —                                          | Fires after a successful submit.                                                                                    |
-| `onDismiss`        | `() => void`                                                      | —                                          | Fires when the user dismisses the widget.                                                                           |
-| `prefillEmail`     | `string`                                                          | —                                          | Pre-fill the email input.                                                                                           |
-| `container`        | `HTMLElement`                                                     | `document.body`                            | Where to append the widget host.                                                                                    |
-| `trackInSpectacle` | `boolean`                                                         | `false`                                    | Tracks Identify and Event in [Spectacle](https://www.spectaclehq.com). Requires the Spectacle script to be present. |
+| Option             | Type                                                              | Default                                    | Description                                                                                                                                                                   |
+| ------------------ | ----------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `layout`           | `'drawer' \| 'fullscreen' \| 'banner'`                            | `'drawer'`                                 | Visual variant.                                                                                                                                                               |
+| `url`              | `string`                                                          | `window.location.href`                     | URL emailed to the user.                                                                                                                                                      |
+| `title`            | `string`                                                          | `document.title`                           | Page title shown in preview + used as `mailto:` subject.                                                                                                                      |
+| `logoUrl`          | `string \| null`                                                  | auto-detected favicon                      | Override the auto-detected logo. `null` hides it.                                                                                                                             |
+| `persistence`      | `{ strategy: 'localStorage' \| 'session' \| 'always', ttlDays? }` | `{ strategy: 'localStorage', ttlDays: 7 }` | How long to remember dismissals.                                                                                                                                              |
+| `trigger`          | `'load' \| 'manual' \| { delay: ms } \| { scrollDepth: 0..100 }`  | `'load'`                                   | When the widget should appear.                                                                                                                                                |
+| `forceShow`        | `boolean`                                                         | `false`                                    | Bypass UA detection + dismiss record. Useful in development.                                                                                                                  |
+| `debug`            | `boolean`                                                         | `false`                                    | Alias for `forceShow`.                                                                                                                                                        |
+| `copy`             | `Partial<Copy>`                                                   | English defaults                           | Override any user-facing string. See the [Copy keys](#copy-keys) table.                                                                                                       |
+| `action`           | `(email, meta) => Promise<ActionResult>`                          | `mailtoAction`                             | Replace the default `mailto:` flow with a custom send.                                                                                                                        |
+| `etsPayload`       | `string`                                                          | —                                          | HMAC-signed envelope (see [Hosted send endpoint](#hosted-send-endpoint-spectacle-managed)). When set, the widget submits to Spectacle's hosted endpoint instead of `mailto:`. |
+| `onSubmit`         | `(email) => void`                                                 | —                                          | Fires after a successful submit.                                                                                                                                              |
+| `onDismiss`        | `() => void`                                                      | —                                          | Fires when the user dismisses the widget.                                                                                                                                     |
+| `prefillEmail`     | `string`                                                          | —                                          | Pre-fill the email input.                                                                                                                                                     |
+| `container`        | `HTMLElement`                                                     | `document.body`                            | Where to append the widget host.                                                                                                                                              |
+| `trackInSpectacle` | `boolean`                                                         | `false`                                    | Tracks Identify and Event in [Spectacle](https://www.spectaclehq.com). Requires the Spectacle script to be present.                                                           |
 
 ### Instance methods
 
@@ -131,7 +132,61 @@ widget.destroy(); // tear down completely (use this on SPA route changes)
 widget.state; // 'idle' | 'loading' | 'success' | 'error' | 'dismissed'
 ```
 
+### Hosted send endpoint (Spectacle-managed)
+
+The default `mailto:` flow hands the link to the user's mail client — fine for many cases, but the email actually arriving in their inbox depends on the OS and the user remembering to hit "send". For a guaranteed-delivered email we offer a hosted send endpoint.
+
+The endpoint **only accepts requests accompanied by an HMAC-signed envelope minted on your server**. This means an attacker cannot tamper with the URL or title that ends up in the email — what your server signs is what the recipient sees.
+
+#### 1. Get your `keyId` and `secret`
+
+Sign in to your Spectacle workspace (`https://app.spectaclehq.com`) and open **Settings → Email-to-self** to find your `keyId` (public, may live in client code) and `secret` (treat as a server-side credential — never ship to the browser). Each key is bound to an allow-list of origins and hostnames you control.
+
+> v1 is invitation-only — drop us a line at [dev@spectaclehq.com](mailto:dev@spectaclehq.com) if you'd like access.
+
+#### 2. Sign the envelope server-side
+
+```ts
+// e.g. inside a Next.js Server Component, an Express handler, etc.
+import { signEmailToSelfPayload } from '@spectaclehq/email-to-self/server';
+
+const etsPayload = signEmailToSelfPayload({
+  keyId: process.env.SPECTACLE_ETS_KEY_ID!,
+  secret: process.env.SPECTACLE_ETS_SECRET!,
+  url: 'https://example.com/blog/post', // the URL that will be in the email
+  title: 'How we ship faster', // the title that will be in the email
+  // ttlSeconds: 3600,                    // optional, default 1h, clamped 60s..24h
+});
+```
+
+`signEmailToSelfPayload` is a Node-only entry point — it imports `node:crypto`. Keep it on the server.
+
+#### 3. Pass the envelope to the widget
+
+```tsx
+import { EmailToSelfWidget } from '@spectaclehq/email-to-self/react';
+
+<EmailToSelfWidget
+  layout="drawer"
+  etsPayload={etsPayload} // ← from step 2
+  url="https://example.com/blog/post"
+  title="How we ship faster"
+/>;
+```
+
+When `etsPayload` is set, the widget submits to the Spectacle-hosted endpoint instead of opening a `mailto:`. If the request fails the widget shows the server-supplied error message; if any of the env vars are missing on the server, omit `etsPayload` entirely and the widget gracefully falls back to `mailto:`.
+
+#### Envelope format (for reference)
+
+```text
+base64url(canonical_json(payload)) + "." + base64url(HMAC-SHA256(payload_canonical_json, secret))
+```
+
+Where `payload` is `{ v: 1, keyId, url, title, iat, exp, nonce }`. Replays are blocked server-side — each `nonce` is single-use within the envelope's lifetime.
+
 ### Custom actions
+
+If you want to deliver to your own backend instead of the Spectacle-hosted endpoint:
 
 ```ts
 new EmailToSelf({

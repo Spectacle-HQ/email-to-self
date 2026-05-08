@@ -1,3 +1,4 @@
+import { apiAction } from './actions/api';
 import { mailtoAction } from './actions/mailto';
 import { detectInAppBrowser } from './detection';
 import { el, focusableIn, icons, replaceChildren, trapFocus } from './dom';
@@ -116,8 +117,23 @@ export class EmailToSelf implements EmailToSelfInstance {
     this.#opts = opts;
     this.#copy = mergeCopy(opts.copy);
     this.#layout = opts.layout ?? 'drawer';
-    this.#action = opts.action ?? mailtoAction;
-    this.#mode = opts.action ? 'custom' : 'mailto';
+
+    // Action precedence: explicit `action` > built-in apiAction (when
+    // `etsPayload` is set) > default mailto.
+    let resolvedAction: ActionFn;
+    let resolvedMode: Mode;
+    if (opts.action) {
+      resolvedAction = opts.action;
+      resolvedMode = 'custom';
+    } else if (opts.etsPayload) {
+      resolvedAction = apiAction({ etsPayload: opts.etsPayload });
+      resolvedMode = 'custom';
+    } else {
+      resolvedAction = mailtoAction;
+      resolvedMode = 'mailto';
+    }
+    this.#action = resolvedAction;
+    this.#mode = resolvedMode;
     this.#url = opts.url ?? (typeof location !== 'undefined' ? location.href : '');
     this.#title = opts.title ?? (typeof document !== 'undefined' ? document.title : '');
 
@@ -833,13 +849,15 @@ export class EmailToSelf implements EmailToSelfInstance {
       }
       if (this.#opts.trackInSpectacle) {
         try {
-          const w = window as unknown as { spectacle?: { identify?: (p: object) => void, track?: (e: string, p: object) => void } };
+          const w = window as unknown as {
+            spectacle?: { identify?: (p: object) => void; track?: (e: string, p: object) => void };
+          };
           if (!w.spectacle) {
             console.warn('[email-to-self] Spectacle not found in window');
           }
 
           w.spectacle?.identify?.({ email: value });
-          w.spectacle?.track?.("Visitor E-mailed Page to Self", { url: window.location.href});
+          w.spectacle?.track?.('Visitor E-mailed Page to Self', { url: window.location.href });
         } catch {
           /* swallow */
         }

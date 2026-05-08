@@ -78,8 +78,17 @@ export interface EmailToSelfOptions {
   forceShow?: boolean;
   /** Override any user-facing string. */
   copy?: Partial<Copy>;
-  /** Custom async action. If omitted, the default `mailto:` action runs. */
+  /** Custom async action. If omitted and `etsPayload` is set, the built-in
+   * Spectacle-hosted API action runs; otherwise the default `mailto:` action
+   * runs. */
   action?: ActionFn;
+  /**
+   * HMAC-signed envelope minted on the customer's server (see
+   * `@spectaclehq/email-to-self/server`). When set, the widget submits to
+   * Spectacle's hosted send endpoint and the email is delivered server-side
+   * — the URL and title in the email are exactly what the server signed.
+   */
+  etsPayload?: string;
   /** Fired after the configured action resolves successfully. */
   onSubmit?: (email: string) => void;
   /** Fired when the user dismisses the widget. */
