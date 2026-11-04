@@ -20,6 +20,9 @@ const IN_APP_PATTERNS: Array<{ name: string; re: RegExp }> = [
   { name: 'pinterest', re: /Pinterest/i },
   { name: 'wechat', re: /MicroMessenger/i },
   { name: 'line', re: /\bLine\//i },
+  // Android only: the app's web view ends its UA in `Reddit/Version …/Build …`.
+  // On iOS, Reddit opens links with a UA identical to Safari's.
+  { name: 'reddit', re: /\bReddit\//i },
 ];
 
 export interface InAppDetection {
