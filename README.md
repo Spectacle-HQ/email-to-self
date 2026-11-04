@@ -239,7 +239,7 @@ The widget exposes CSS custom properties on the shadow host. Override them via y
 
 ## Detected user agents
 
-`Instagram`, `LinkedInApp`, `FBAN`/`FBAV` (Facebook), `FB_IAB`/`Messenger`, `Twitter`, `TikTok`/`musical_ly`, `Snapchat`, `Pinterest`, `MicroMessenger` (WeChat), `Line`.
+`Instagram`, `LinkedInApp`, `FBAN`/`FBAV` (Facebook), `FB_IAB`/`Messenger`, `Twitter`, `TikTok`/`musical_ly`/`Bytedance`, `Snapchat`, `Pinterest`, `MicroMessenger` (WeChat), `Line`, `Reddit/` (Reddit on Android; on iOS its links open with Safari's own user agent, so they can't be told apart).
 
 UA strings drift. If you hit a missed case, please open an issue — and use `forceShow: true` while you wait.
 
